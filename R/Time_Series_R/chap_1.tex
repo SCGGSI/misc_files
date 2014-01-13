@@ -1,0 +1,238 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{hyperref}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\title{Introductory Time Series with R \\ Chapter 1 Exercises}
+\author{Jacob Carey}
+\date{\today}
+\maketitle
+
+
+Note that all data (unless otherwise noted) were obtained from \\ \url{http://elena.aut.ac.nz/~pcowpert/ts}
+
+
+
+
+\begin{enumerate}
+\item Carry out the following exploratory time series analysis in R using either the chocolate or the beer production data from \S 1.4.3.
+\begin{enumerate}
+\item Produce a time plot of the data. Plot the aggregated annual series and a boxplot that summarizes the observed values for each season, and comment on the plots.
+\newpage
+We choose to use the beer data and have imported it as a time series, \texttt{Beer.ts}.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Beer.ts,} \hlkwc{xlab}\hlstd{=}\hlstr{"Year"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Beer (Ml)"}\hlstd{,}
+     \hlkwc{main}\hlstd{=}\hlstr{"Austrialian Beer Production"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=1\linewidth]{figure/problem1a-1} 
+
+\end{knitrout}
+
+\newpage
+We aggregate the Beer data to create the second plot
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Beer.year} \hlkwb{<-} \hlkwd{aggregate}\hlstd{(Beer.ts,} \hlkwc{FUN}\hlstd{=sum)}
+\hlkwd{plot}\hlstd{(Beer.year,} \hlkwc{xlab}\hlstd{=}\hlstr{"Year"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Beer (Ml)"}\hlstd{,}
+     \hlkwc{main}\hlstd{=}\hlstr{"Australian Beer Production (Annual)"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=1\linewidth]{figure/problem1a-2} 
+
+\end{knitrout}
+
+\newpage
+Finally, we use the \texttt{cycle} function to create a boxplot of monthly beer production.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{boxplot}\hlstd{(Beer.ts}\hlopt{~}\hlkwd{cycle}\hlstd{(Beer.ts),} \hlkwc{xlab}\hlstd{=}\hlstr{"Month"}\hlstd{,}
+        \hlkwc{ylab}\hlstd{=}\hlstr{"Beer (Ml)"}\hlstd{,}
+        \hlkwc{main}\hlstd{=}\hlstr{"Monthly Production of Austrial Beer"}\hlstd{,}
+        \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{12}\hlstd{, month.abb[}\hlnum{1}\hlopt{:}\hlnum{12}\hlstd{])}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=1\linewidth]{figure/problem1a-3} 
+
+\end{knitrout}
+
+\newpage
+\item Decompose the series into the components trend, seasonal effect, and residuals, and plot the decomposed series. Produce a plot of the trend with a superimposed seasonal effect.
+\\ 
+First we decompose the series, choosing multiplicate decomposition, by using the \texttt{decompose} function.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{Beer.decompose} \hlkwb{<-} \hlkwd{decompose}\hlstd{(Beer.ts,} \hlstr{"multi"}\hlstd{)}
+\hlstd{Trend} \hlkwb{<-} \hlstd{Beer.decompose}\hlopt{$}\hlstd{trend}
+\hlstd{Seasonal} \hlkwb{<-} \hlstd{Beer.decompose}\hlopt{$}\hlstd{seasonal}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Next, we plot the decomposition.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(Beer.decompose,} \hlkwc{xlab} \hlstd{=} \hlstr{"Year"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=1\linewidth]{figure/problem1b-2} 
+
+\end{knitrout}
+
+\newpage
+Finally, we create a plot of the time series model superimposed over the trend. We use the \texttt{ts.plot} function, which is designed for plotting time series, and can superimpose plots by \texttt{cbind}-ing the time-series objects. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{ts.plot}\hlstd{(}\hlkwd{cbind}\hlstd{(Trend, Trend}\hlopt{*}\hlstd{Seasonal),} \hlkwc{lty}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{,}
+        \hlkwc{xlab}\hlstd{=}\hlstr{"Year"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Beer (Ml)"}\hlstd{,}
+        \hlkwc{main}\hlstd{=}\hlstr{"Australian Beer Production Time Series Model
+        Superimposed over Production Trend"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=1\linewidth]{figure/problem1b-3} 
+
+\end{knitrout}
+
+
+\end{enumerate}
+\newpage
+\item Many economic time series are based on indices. A price index is the ratio of the cost of a basket of goods now to its cost in some base year. In the Laspeyre formulation, the basked is based on typical purchases in the base year. You are asked to calculate an index of of motoring cost from the following data. The clutch represents all mechanical parts, and the quantity allows for this.
+% latex table generated in R 3.0.2 by xtable 1.7-1 package
+% Mon Dec 16 11:18:46 2013
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & quantity.00 & unit.price.00 & quantity.04 & unit.price.04 \\ 
+  \hline
+car & 0.33 & 18000.00 & 0.50 & 20000.00 \\ 
+  petrol & 2000.00 & 0.80 & 1500.00 & 1.60 \\ 
+  servicing & 40.00 & 40.00 & 20.00 & 60.00 \\ 
+  tyre & 3.00 & 80.00 & 2.00 & 120.00 \\ 
+  clutch & 2.00 & 200.00 & 1.00 & 360.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+The \textit{Laspeye Price Index} at time \textit{t} relative to base year 0 is \\ \\
+\centerline{$\frac{\sum q_{i0} p_{it}}{\sum q_{i0} p_{i0}}$} \\ \\ \\
+Calculate the $LI_t$ for 2004 relative to 2000.
+\\
+We have created a dataset from the listed table and call the data frame \texttt{Auto.df}. We use the following code to calculate the $LI_t$
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{LI_t} \hlkwb{<-} \hlkwd{sum}\hlstd{(Auto.df}\hlopt{$}\hlstd{quantity.00}\hlopt{*}\hlstd{Auto.df}\hlopt{$}\hlstd{unit.price.04)}\hlopt{/}
+  \hlkwd{sum}\hlstd{(Auto.df}\hlopt{$}\hlstd{quantity.00}\hlopt{*}\hlstd{Auto.df}\hlopt{$}\hlstd{unit.price.00)}
+\hlstd{LI_t}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.358
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\newpage
+\item The \textit{Paasche Price Index} at time t relative to base year 0 is \\ \\
+\centerline{$\frac{\sum q_{it} p_{it}}{\sum q_{it} p_{i0}}$} \\ \\
+\begin{enumerate}
+\item Use the data above to calculate the $PI_t$ for 2004 relative to 2000.
+\\
+Using the created \texttt{Auto.df}, we calculate the $PI_t$
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{PI_t} \hlkwb{<-} \hlkwd{sum}\hlstd{(Auto.df}\hlopt{$}\hlstd{quantity.04}\hlopt{*}\hlstd{Auto.df}\hlopt{$}\hlstd{unit.price.04)}\hlopt{/}
+  \hlkwd{sum}\hlstd{(Auto.df}\hlopt{$}\hlstd{quantity.04}\hlopt{*}\hlstd{Auto.df}\hlopt{$}\hlstd{unit.price.00)}
+\hlstd{PI_t}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.25
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\item Explain why the $PI_t$ is usually lower than the $LI_t$. 
+\\ \\
+People tend to buy fewer of things as the prices increase, and since the quantity used in this calculation comes from step t instead of step 0, the quantity for items that have increased in price is typically lower
+\\
+\item Calculate the \textit{Irving-Fisher Price Index} as the geometric mean of the $LI_t$ and $PI_t$. (The geometric mean of a sample of \textit{n} items is the \textit{n}th root of their product.)
+\\
+Using the calculated $PI_t$ and $LI_t$, we calculate the \textit{Irving-Fisher Price Index}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{sqrt}\hlstd{(LI_t} \hlopt{*} \hlstd{PI_t)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.303
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\end{enumerate}
+\end{enumerate}
+
+
+\end{document}

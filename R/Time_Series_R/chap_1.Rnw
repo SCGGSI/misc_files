@@ -1,0 +1,125 @@
+\documentclass{article}
+\usepackage{hyperref}
+\begin{document}
+
+\title{Introductory Time Series with R \\ Chapter 1 Exercises}
+\author{Jacob Carey}
+\date{\today}
+\maketitle
+
+
+Note that all data (unless otherwise noted) were obtained from \\ \url{http://elena.aut.ac.nz/~pcowpert/ts}
+
+<<data-prep, echo=FALSE>>=
+library(xtable)
+# Problem 1 data
+www <- "http://elena.aut.ac.nz/~pcowpert/ts/cbe.dat"
+CBE <- read.table(www, header=T)
+Beer.ts <- ts(CBE[,2], start=1958, freq=12)
+
+# Problem 2, 3 data
+Auto <- matrix(c(0.33, 18000, 0.5, 20000, 2000, 0.8, 1500, 1.6,
+                 40, 40, 20, 60, 3, 80, 2, 120, 2, 200, 1, 360), 
+               byrow=T, nrow=5)
+
+Auto.df <- data.frame(Auto, row.names=c("car", "petrol", "servicing", 
+                                        "tyre", "clutch"))
+
+colnames(Auto.df) <- c("quantity.00", "unit.price.00", 
+                       "quantity.04", "unit.price.04")
+@
+
+\begin{enumerate}
+\item Carry out the following exploratory time series analysis in R using either the chocolate or the beer production data from \S 1.4.3.
+\begin{enumerate}
+\item Produce a time plot of the data. Plot the aggregated annual series and a boxplot that summarizes the observed values for each season, and comment on the plots.
+\newpage
+We choose to use the beer data and have imported it as a time series, \texttt{Beer.ts}.
+<<problem1a-1, out.width='1\\linewidth', tidy=FALSE>>=
+plot(Beer.ts, xlab="Year", ylab="Beer (Ml)", 
+     main="Austrialian Beer Production")
+@
+\newpage
+We aggregate the Beer data to create the second plot
+<<problem1a-2, out.width='1\\linewidth', tidy=FALSE>>=
+Beer.year <- aggregate(Beer.ts, FUN=sum)
+plot(Beer.year, xlab="Year", ylab="Beer (Ml)", 
+     main="Australian Beer Production (Annual)")
+@
+\newpage
+Finally, we use the \texttt{cycle} function to create a boxplot of monthly beer production.
+
+<<problem1a-3, out.width='1\\linewidth', tidy=FALSE>>=
+boxplot(Beer.ts~cycle(Beer.ts), xlab="Month", 
+        ylab="Beer (Ml)", 
+        main="Monthly Production of Austrial Beer", 
+        xaxt="n")
+axis(1, 1:12, month.abb[1:12])
+@
+\newpage
+\item Decompose the series into the components trend, seasonal effect, and residuals, and plot the decomposed series. Produce a plot of the trend with a superimposed seasonal effect.
+\\ 
+First we decompose the series, choosing multiplicate decomposition, by using the \texttt{decompose} function.
+<<problem1b-1>>=
+Beer.decompose <- decompose(Beer.ts, "multi")
+Trend <- Beer.decompose$trend
+Seasonal <- Beer.decompose$seasonal
+@
+Next, we plot the decomposition.
+<<problem1b-2, out.width='1\\linewidth'>>=
+plot(Beer.decompose, xlab="Year")
+@
+\newpage
+Finally, we create a plot of the time series model superimposed over the trend. We use the \texttt{ts.plot} function, which is designed for plotting time series, and can superimpose plots by \texttt{cbind}-ing the time-series objects. 
+
+<<problem1b-3, out.width='1\\linewidth', tidy=FALSE>>=
+ts.plot(cbind(Trend, Trend*Seasonal), lty=1:2, 
+        xlab="Year", ylab="Beer (Ml)", 
+        main="Australian Beer Production Time Series Model
+        Superimposed over Production Trend")
+@
+
+\end{enumerate}
+\newpage
+\item Many economic time series are based on indices. A price index is the ratio of the cost of a basket of goods now to its cost in some base year. In the Laspeyre formulation, the basked is based on typical purchases in the base year. You are asked to calculate an index of of motoring cost from the following data. The clutch represents all mechanical parts, and the quantity allows for this.
+<<print-table, echo=FALSE, results='asis'>>=
+xtable(Auto.df)
+@
+The \textit{Laspeye Price Index} at time \textit{t} relative to base year 0 is \\ \\
+\centerline{$\frac{\sum q_{i0} p_{it}}{\sum q_{i0} p_{i0}}$} \\ \\ \\
+Calculate the $LI_t$ for 2004 relative to 2000.
+\\
+We have created a dataset from the listed table and call the data frame \texttt{Auto.df}. We use the following code to calculate the $LI_t$
+<<problem2-LIt, tidy=FALSE>>=
+LI_t <- sum(Auto.df$quantity.00*Auto.df$unit.price.04)/
+  sum(Auto.df$quantity.00*Auto.df$unit.price.00)
+LI_t
+@
+
+\newpage
+\item The \textit{Paasche Price Index} at time t relative to base year 0 is \\ \\
+\centerline{$\frac{\sum q_{it} p_{it}}{\sum q_{it} p_{i0}}$} \\ \\
+\begin{enumerate}
+\item Use the data above to calculate the $PI_t$ for 2004 relative to 2000.
+\\
+Using the created \texttt{Auto.df}, we calculate the $PI_t$
+<<problem3a, tidy=FALSE>>=
+PI_t <- sum(Auto.df$quantity.04*Auto.df$unit.price.04)/
+  sum(Auto.df$quantity.04*Auto.df$unit.price.00)
+PI_t
+@
+\item Explain why the $PI_t$ is usually lower than the $LI_t$. 
+\\ \\
+People tend to buy fewer of things as the prices increase, and since the quantity used in this calculation comes from step t instead of step 0, the quantity for items that have increased in price is typically lower
+\\
+\item Calculate the \textit{Irving-Fisher Price Index} as the geometric mean of the $LI_t$ and $PI_t$. (The geometric mean of a sample of \textit{n} items is the \textit{n}th root of their product.)
+\\
+Using the calculated $PI_t$ and $LI_t$, we calculate the \textit{Irving-Fisher Price Index}
+<<problem3c>>=
+sqrt(LI_t * PI_t)
+@
+\end{enumerate}
+\end{enumerate}
+
+
+\end{document}
